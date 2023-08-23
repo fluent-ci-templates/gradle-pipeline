@@ -39,6 +39,9 @@ export function generateYaml(): Workflow {
       {
         name: "Upload Coverage",
         run: "fluentci run codecov_pipeline",
+        env: {
+          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}",
+        },
       },
     ],
   };
