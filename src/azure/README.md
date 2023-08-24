@@ -1,6 +1,8 @@
 # Azure Pipelines
 
+[![deno module](https://shield.deno.dev/x/gradle_pipeline)](https://deno.land/x/gradle_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
+[![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/gradle-pipeline)](https://codecov.io/gh/fluent-ci-templates/gradle-pipeline)
 
 The following command will generate a `azure-pipelines.yml` file in your project:
 
