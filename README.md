@@ -48,10 +48,8 @@ fluentci
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.4/mod.ts";;
-import { Dagger } from "https://pkg.fluentci.io/gradle_pipeline/mod.ts";
-
-const { check, test, build } = Dagger;
+import Client, { connect } from "https://sdk.fluentci.io/v0.1.7/mod.ts";
+import { check, test, build } from "https://pkg.fluentci.io/gradle_pipeline@v0.3.0/mod.ts";
 
 function pipeline(src = ".") {
   connect(async (client: Client) => {
