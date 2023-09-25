@@ -1,11 +1,12 @@
 {
-  "version": "2",
+  "version": "3",
   "remote": {
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar/deps.ts": "096395daebc7ed8a18f0484e4ffcc3a7f70e50946735f7df9611a7fcfd8272cc",
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar/mod.ts": "e269d71c72ae68e82c1960e5db2a0c7419c97c9683ef717de0ab75d90f364713",
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar/src/tar.ts": "8a2c1c4692cf92f70437509761dec291a660a85675602e4954de04e721d82ae4",
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar@v0.1.1/deps.ts": "096395daebc7ed8a18f0484e4ffcc3a7f70e50946735f7df9611a7fcfd8272cc",
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar@v0.1.1/mod.ts": "e269d71c72ae68e82c1960e5db2a0c7419c97c9683ef717de0ab75d90f364713",
+    "https://cdn.jsdelivr.net/gh/tsirysndr/tar@v0.1.1/src/interface.ts": "3d4371b7590e90af7b191b93f8681ea7add6f5dca0d26a4d171701de09707c4f",
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar@v0.1.1/src/tar.ts": "9b02eaaa784b225ad7a23d2769cd492adf113ea7c11c02e3646849e98f4ae43b",
     "https://deno.land/std@0.129.0/_util/assert.ts": "e94f2eb37cebd7f199952e242c77654e43333c1ac4c5c700e929ea3aa5489f74",
     "https://deno.land/std@0.129.0/_util/os.ts": "49b92edea1e82ba295ec946de8ffd956ed123e2948d9bd1d3e901b04e4307617",
@@ -234,6 +235,9 @@
     "https://nix.fluentci.io/v0.4.1/src/dagger/steps.ts": "c33775203391e62279bdbbc85ab5b8aa920a321ea90daab48abbbff7d5725454",
     "https://nix.fluentci.io/v0.5.1/deps.ts": "d2fee07fcb79b609f64f988990ad5d67c7bf17455f75dcbf1b3bbfa5de7c73b2",
     "https://nix.fluentci.io/v0.5.1/src/dagger/steps.ts": "b766f4fa9624a032e7af884a5ca47bc666a529c4a472d38b74b55ca0d63cf81d",
+    "https://pkg.fluentci.io/grype_pipeline@v0.1.0/deps.ts": "5dec3b3f1c2e82e2e902da1cd399700a582e0d6b1f0ac8f711f536f908fa9ba1",
+    "https://pkg.fluentci.io/grype_pipeline@v0.1.0/src/dagger/jobs.ts": "8b96d4f84b971dcf476b925cfd85a4a15f50b864728fffce7a9cb80fb6619556",
+    "https://pkg.fluentci.io/grype_pipeline@v0.1.0/src/dagger/list_jobs.ts": "15a8af757c8c87f6d4e6104d5b17bac0c1d648c57a55c9748b7dce969bddbeba",
     "https://sdk.fluentci.io/v0.1.4/mod.ts": "d04d9358605b672fc877e7ae8eaaef228773819e9c46bf581dd4a351b887ab7e",
     "https://sdk.fluentci.io/v0.1.4/src/client.ts": "f44b27ae573b09d85089ce4e5c9a01c95926058fb41d26de23f0f6f5412ecf89",
     "https://sdk.fluentci.io/v0.1.4/src/connect.ts": "ddd4cbac2069427ad3b9106459207d63d392640f3c669c45b87e5049711dd338",
