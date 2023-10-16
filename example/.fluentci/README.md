@@ -12,7 +12,7 @@ A ready-to-use CI/CD Pipeline for your Gradle projects.
 Run the following command:
 
 ```bash
-dagger run fluentci gradle_pipeline
+fluentci run gradle_pipeline
 ```
 
 Or, if you want to use it as a template:
@@ -26,7 +26,7 @@ This will create a `.fluentci` folder in your project.
 Now you can run the pipeline with:
 
 ```bash
-dagger run fluentci .
+fluentci run .
 ```
 
 Or simply:
@@ -48,8 +48,8 @@ fluentci
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.7/mod.ts";
-import { check, test, build } from "https://pkg.fluentci.io/gradle_pipeline@v0.3.0/mod.ts";
+import Client, { connect } from "https://sdk.fluentci.io/v0.1.9/mod.ts";
+import { check, test, build } from "https://pkg.fluentci.io/gradle_pipeline@v0.3.1/mod.ts";
 
 function pipeline(src = ".") {
   connect(async (client: Client) => {

@@ -1,11 +1,19 @@
-import Client from "@dagger.io/dagger";
-import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.3.6/src/dagger/steps.ts";
+import Client from "@fluentci.io/dagger";
+import { withDevbox } from "https://nix.fluentci.io/v0.4.1/src/dagger/steps.ts";
 
 export enum Job {
   build = "build",
   test = "test",
   check = "check",
 }
+
+export const exclude = [
+  "build",
+  ".gradle",
+  "app/build",
+  ".devbox",
+  ".fluentci",
+];
 
 export const build = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
@@ -37,9 +45,7 @@ export const build = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-root-cache"))
     .withMountedCache("/app/app/build", client.cacheVolume("gradle-app-build"))
-    .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec(["sh", "-c", "ls -ltr /nix"])
@@ -81,9 +87,7 @@ export const test = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-root-cache"))
     .withMountedCache("/app/app/build", client.cacheVolume("gradle-app-build"))
-    .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec(["sh", "-c", "ls -ltr /nix"])
@@ -125,9 +129,7 @@ export const check = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-root-cache"))
     .withMountedCache("/app/app/build", client.cacheVolume("gradle-app-build"))
-    .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
-    })
+    .withDirectory("/app", context, { exclude })
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec(["sh", "-c", "ls -ltr /nix"])
