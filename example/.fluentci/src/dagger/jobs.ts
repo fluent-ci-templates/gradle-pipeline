@@ -34,7 +34,11 @@ export const build = async (src = ".") => {
         "libstdc++",
         "zlib",
         "gcompat",
-      ]);
+      ])
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
 
     const ctr = baseCtr
       .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
@@ -78,7 +82,11 @@ export const test = async (src = ".") => {
         "libstdc++",
         "zlib",
         "gcompat",
-      ]);
+      ])
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
 
     const ctr = baseCtr
       .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
@@ -93,8 +101,6 @@ export const test = async (src = ".") => {
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
       .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "ls -ltr /nix"])
-      .withExec(["nix", "--version"])
       .withExec(["sh", "-c", "devbox run -- ./gradlew test"]);
 
     const result = await ctr.stdout();
@@ -124,7 +130,11 @@ export const check = async (src = ".") => {
         "libstdc++",
         "zlib",
         "gcompat",
-      ]);
+      ])
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
 
     const ctr = baseCtr
       .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
@@ -139,8 +149,6 @@ export const check = async (src = ".") => {
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
       .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "ls -ltr /nix"])
-      .withExec(["nix", "--version"])
       .withExec(["sh", "-c", "devbox run -- ./gradlew check"]);
 
     const result = await ctr.stdout();
