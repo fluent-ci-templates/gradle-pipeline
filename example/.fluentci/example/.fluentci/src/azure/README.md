@@ -1,6 +1,6 @@
 # Azure Pipelines
 
-![deno compatibility](https://shield.deno.dev/deno/^1.34)
+![deno compatibility](https://shield.deno.dev/deno/^1.37)
 
 The following command will generate a `azure-pipelines.yml` file in your project:
 
