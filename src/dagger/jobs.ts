@@ -21,7 +21,7 @@ export const build = async (src = ".") => {
     const baseCtr = client
       .pipeline(Job.build)
       .container()
-      .from("ghcr.io/fluent-ci-templates/devbox:latest")
+      .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["apk", "update"])
       .withExec([
         "apk",
@@ -69,7 +69,7 @@ export const test = async (src = ".") => {
     const baseCtr = client
       .pipeline(Job.test)
       .container()
-      .from("ghcr.io/fluent-ci-templates/devbox:latest")
+      .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["apk", "update"])
       .withExec([
         "apk",
@@ -117,7 +117,7 @@ export const check = async (src = ".") => {
     const baseCtr = client
       .pipeline(Job.build)
       .container()
-      .from("ghcr.io/fluent-ci-templates/devbox:latest")
+      .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["apk", "update"])
       .withExec([
         "apk",
