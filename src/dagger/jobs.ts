@@ -1,4 +1,4 @@
-import Client, { withDevbox } from "../../deps.ts";
+import Client, { connect } from "../../deps.ts";
 
 export enum Job {
   build = "build",
@@ -14,14 +14,14 @@ export const exclude = [
   ".fluentci",
 ];
 
-export const build = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
+export const build = async (src = ".") => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    client
+    const baseCtr = client
       .pipeline(Job.build)
       .container()
-      .from("alpine:latest")
+      .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["apk", "update"])
       .withExec([
         "apk",
@@ -35,35 +35,41 @@ export const build = async (client: Client, src = ".") => {
         "zlib",
         "gcompat",
       ])
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withExec(["sh", "-c", "ls -ltr /nix"])
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
 
-  const ctr = baseCtr
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-root-cache"))
-    .withMountedCache("/app/app/build", client.cacheVolume("gradle-app-build"))
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["sh", "-c", "ls -ltr /nix"])
-    .withExec(["nix", "--version"])
-    .withExec(["sh", "-c", "devbox run -- ./gradlew build"]);
+    const ctr = baseCtr
+      .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
+      .withMountedCache(
+        "/root/.gradle",
+        client.cacheVolume("gradle-root-cache")
+      )
+      .withMountedCache(
+        "/app/app/build",
+        client.cacheVolume("gradle-app-build")
+      )
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec(["chmod", "+x", "./gradlew"])
+      .withExec(["sh", "-c", "devbox run -- ./gradlew build"]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "done";
 };
 
-export const test = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
+export const test = async (src = ".") => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    client
+    const baseCtr = client
       .pipeline(Job.test)
       .container()
-      .from("alpine:latest")
+      .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["apk", "update"])
       .withExec([
         "apk",
@@ -77,35 +83,41 @@ export const test = async (client: Client, src = ".") => {
         "zlib",
         "gcompat",
       ])
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withExec(["sh", "-c", "ls -ltr /nix"])
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
 
-  const ctr = baseCtr
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-root-cache"))
-    .withMountedCache("/app/app/build", client.cacheVolume("gradle-app-build"))
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["sh", "-c", "ls -ltr /nix"])
-    .withExec(["nix", "--version"])
-    .withExec(["sh", "-c", "devbox run -- ./gradlew test"]);
+    const ctr = baseCtr
+      .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
+      .withMountedCache(
+        "/root/.gradle",
+        client.cacheVolume("gradle-root-cache")
+      )
+      .withMountedCache(
+        "/app/app/build",
+        client.cacheVolume("gradle-app-build")
+      )
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec(["chmod", "+x", "./gradlew"])
+      .withExec(["sh", "-c", "devbox run -- ./gradlew test"]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "done";
 };
 
-export const check = async (client: Client, src = ".") => {
-  const context = client.host().directory(src);
+export const check = async (src = ".") => {
+  await connect(async (client: Client) => {
+    const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    client
+    const baseCtr = client
       .pipeline(Job.build)
       .container()
-      .from("alpine:latest")
+      .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["apk", "update"])
       .withExec([
         "apk",
@@ -119,39 +131,41 @@ export const check = async (client: Client, src = ".") => {
         "zlib",
         "gcompat",
       ])
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withExec(["sh", "-c", "ls -ltr /nix"])
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withExec(["sh", "-c", "devbox version update"]);
 
-  const ctr = baseCtr
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-root-cache"))
-    .withMountedCache("/app/app/build", client.cacheVolume("gradle-app-build"))
-    .withDirectory("/app", context, { exclude })
-    .withWorkdir("/app")
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["sh", "-c", "ls -ltr /nix"])
-    .withExec(["nix", "--version"])
-    .withExec(["sh", "-c", "devbox run -- ./gradlew check"]);
+    const ctr = baseCtr
+      .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
+      .withMountedCache(
+        "/root/.gradle",
+        client.cacheVolume("gradle-root-cache")
+      )
+      .withMountedCache(
+        "/app/app/build",
+        client.cacheVolume("gradle-app-build")
+      )
+      .withDirectory("/app", context, { exclude })
+      .withWorkdir("/app")
+      .withExec(["chmod", "+x", "./gradlew"])
+      .withExec(["sh", "-c", "devbox run -- ./gradlew check"]);
 
-  const result = await ctr.stdout();
+    const result = await ctr.stdout();
 
-  console.log(result);
+    console.log(result);
+  });
+  return "done";
 };
 
-export type JobExec = (
-  client: Client,
-  src?: string
-) =>
-  | Promise<void>
+export type JobExec = (src?: string) =>
+  | Promise<string>
   | ((
-      client: Client,
       src?: string,
       options?: {
         ignore: string[];
       }
-    ) => Promise<void>);
+    ) => Promise<string>);
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.build]: build,
