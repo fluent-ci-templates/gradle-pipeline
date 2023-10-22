@@ -43,6 +43,12 @@ fluentci
 | test   | Run the tests       |
 | build  | Build the project   |
 
+```graphql
+build(src: String!): String
+check(src: String!): String
+test(src: String!): String
+```
+
 ## Programmatic usage
 
 You can also use this pipeline programmatically:
