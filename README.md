@@ -54,7 +54,7 @@ test(src: String!): String
 You can also use this pipeline programmatically:
 
 ```ts
-import { check, test, build } from "https://pkg.fluentci.io/gradle_pipeline@v0.4.1/mod.ts";
+import { check, test, build } from "https://pkg.fluentci.io/gradle_pipeline@v0.5.0/mod.ts";
 
 await check();
 await test();
