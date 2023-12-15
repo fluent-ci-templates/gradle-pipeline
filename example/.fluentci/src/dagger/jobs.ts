@@ -70,7 +70,7 @@ export async function build(
 
     await ctr.stdout();
 
-    id = await ctr.id();
+    id = await ctr.directory("/build").id();
   });
   return id;
 }
@@ -140,7 +140,7 @@ export async function check(src: Directory | string = "."): Promise<string> {
     const context = getDirectory(client, src);
 
     const baseCtr = client
-      .pipeline(Job.build)
+      .pipeline(Job.check)
       .container()
       .from("ghcr.io/fluentci-io/devbox:latest")
       .withExec(["apk", "update"])
