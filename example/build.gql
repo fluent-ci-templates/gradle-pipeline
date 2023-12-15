@@ -1,5 +1,7 @@
 {
   gradle {
-    build(src: ".")
+    build(src: ".") {
+      id
+    }
   }
 }

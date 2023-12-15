@@ -1,4 +1,7 @@
-import Client, { connect } from "../../deps.ts";
+import { Client } from "../../sdk/client.gen.ts";
+import { connect } from "../../sdk/connect.ts";
+import { Directory } from "../../deps.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   build = "build",
@@ -14,9 +17,18 @@ export const exclude = [
   ".fluentci",
 ];
 
-export const build = async (src = ".") => {
+/**
+ * @function
+ * @description Build the project
+ * @param {string | Directory} src
+ * @returns {string}
+ */
+export async function build(
+  src: Directory | string | undefined = "."
+): Promise<Directory | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const baseCtr = client
       .pipeline(Job.build)
@@ -53,16 +65,24 @@ export const build = async (src = ".") => {
       .withDirectory("/app", context, { exclude })
       .withWorkdir("/app")
       .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew build"]);
+      .withExec(["sh", "-c", "devbox run -- ./gradlew build"])
+      .withExec(["cp", "-r", "/app/app/build", "/build"]);
 
-    const result = await ctr.stdout();
+    await ctr.stdout();
 
-    console.log(result);
+    id = await ctr.id();
   });
-  return "done";
-};
+  return id;
+}
 
-export const test = async (src = ".") => {
+/**
+ * @function
+ * @description Run the tests
+ * @param {string | Directory} src
+ * @returns {string}
+ */
+export async function test(src = "."): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
 
@@ -103,14 +123,19 @@ export const test = async (src = ".") => {
       .withExec(["chmod", "+x", "./gradlew"])
       .withExec(["sh", "-c", "devbox run -- ./gradlew test"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "done";
-};
+  return result;
+}
 
-export const check = async (src = ".") => {
+/**
+ * @function
+ * @description Check the project
+ * @param {string | Directory} src
+ * @returns {string}
+ */
+export async function check(src = "."): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
     const context = client.host().directory(src);
 
@@ -151,21 +176,12 @@ export const check = async (src = ".") => {
       .withExec(["chmod", "+x", "./gradlew"])
       .withExec(["sh", "-c", "devbox run -- ./gradlew check"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "done";
-};
+  return result;
+}
 
-export type JobExec = (src?: string) =>
-  | Promise<string>
-  | ((
-      src?: string,
-      options?: {
-        ignore: string[];
-      }
-    ) => Promise<string>);
+export type JobExec = (src?: string) => Promise<Directory | string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.build]: build,
