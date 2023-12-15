@@ -81,10 +81,10 @@ export async function build(
  * @param {string | Directory} src
  * @returns {string}
  */
-export async function test(src = "."): Promise<string> {
+export async function test(src: Directory | string = "."): Promise<string> {
   let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const baseCtr = client
       .pipeline(Job.test)
@@ -134,10 +134,10 @@ export async function test(src = "."): Promise<string> {
  * @param {string | Directory} src
  * @returns {string}
  */
-export async function check(src = "."): Promise<string> {
+export async function check(src: Directory | string = "."): Promise<string> {
   let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const baseCtr = client
       .pipeline(Job.build)

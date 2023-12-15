@@ -35,6 +35,14 @@ Or simply:
 fluentci
 ```
 
+## Dagger Module
+
+Use as a [Dagger](https://dagger.io) module:
+
+```bash
+dagger mod install github.com/fluent-ci-templates/gradle-pipeline@mod
+```
+
 ## Jobs
 
 | Job    | Description         |
@@ -43,10 +51,19 @@ fluentci
 | test   | Run the tests       |
 | build  | Build the project   |
 
-```graphql
-build(src: String!): String
-check(src: String!): String
-test(src: String!): String
+```typescript
+build(
+  src: Directory | string | undefined = "."
+): Promise<Directory | string>
+
+check(
+  src: Directory | string | undefined = "."
+): Promise<string>
+
+test(
+  src: Directory | string | undefined = "."
+): Promise<string>
+
 ```
 
 ## Programmatic usage
