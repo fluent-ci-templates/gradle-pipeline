@@ -20,5 +20,5 @@ jobs:
         run: |
           dagger query --doc check.gql
           dagger query --doc test.gql
-          dagger query --doc build.gql
+          dagger call build --src .
         working-directory: example
