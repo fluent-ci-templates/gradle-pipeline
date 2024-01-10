@@ -50,7 +50,11 @@ export async function build(
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
       .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withExec(["sh", "-c", "devbox version update"]);
+      .withExec([
+        "sh",
+        "-c",
+        "curl -fsSL https://get.jetpack.io/devbox | bash",
+      ]);
 
     const ctr = baseCtr
       .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
@@ -106,7 +110,11 @@ export async function test(src: Directory | string = "."): Promise<string> {
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
       .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withExec(["sh", "-c", "devbox version update"]);
+      .withExec([
+        "sh",
+        "-c",
+        "curl -fsSL https://get.jetpack.io/devbox | bash",
+      ]);
 
     const ctr = baseCtr
       .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
@@ -159,7 +167,11 @@ export async function check(src: Directory | string = "."): Promise<string> {
       .withExec(["mv", "/nix/store", "/nix/store-orig"])
       .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
       .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withExec(["sh", "-c", "devbox version update"]);
+      .withExec([
+        "sh",
+        "-c",
+        "curl -fsSL https://get.jetpack.io/devbox | bash",
+      ]);
 
     const ctr = baseCtr
       .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
