@@ -1,7 +1,7 @@
 export { assertEquals } from "https://deno.land/std@0.191.0/testing/asserts.ts";
 
 export type { DirectoryID, SecretID } from "./sdk/client.gen.ts";
-export { Directory, Secret, File } from "./sdk/client.gen.ts";
+export { Directory, Secret, File, dag } from "./sdk/client.gen.ts";
 export { connect, uploadContext } from "https://sdk.fluentci.io/v0.3.0/mod.ts";
 export { brightGreen } from "https://deno.land/std@0.191.0/fmt/colors.ts";
 export { withDevbox } from "https://nix.fluentci.io/v0.5.3/src/dagger/steps.ts";
@@ -15,7 +15,6 @@ export {
 } from "https://deno.land/std@0.203.0/path/mod.ts";
 export { parse } from "https://deno.land/std@0.205.0/flags/mod.ts";
 export { snakeCase, camelCase } from "https://cdn.skypack.dev/lodash";
-
 export {
   ClientError,
   GraphQLClient,
