@@ -1,5 +1,4 @@
-import { Client } from "../../sdk/client.gen.ts";
-import { connect } from "../../sdk/connect.ts";
+import { dag } from "../../sdk/client.gen.ts";
 import { Directory } from "../../deps.ts";
 import { getDirectory } from "./lib.ts";
 
@@ -26,56 +25,43 @@ export const exclude = [
 export async function build(
   src: Directory | string | undefined = "."
 ): Promise<Directory | string> {
-  let id = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const baseCtr = client
-      .pipeline(Job.build)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["apk", "update"])
-      .withExec([
-        "apk",
-        "add",
-        "bash",
-        "curl",
-        "wget",
-        "unzip",
-        "git",
-        "libstdc++",
-        "zlib",
-        "gcompat",
-      ])
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withExec([
-        "sh",
-        "-c",
-        "curl -fsSL https://get.jetpack.io/devbox | bash",
-      ]);
+  const baseCtr = dag
+    .pipeline(Job.build)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["apk", "update"])
+    .withExec([
+      "apk",
+      "add",
+      "bash",
+      "curl",
+      "wget",
+      "unzip",
+      "git",
+      "libstdc++",
+      "zlib",
+      "gcompat",
+    ])
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"]);
 
-    const ctr = baseCtr
-      .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("gradle-root-cache")
-      )
-      .withMountedCache(
-        "/app/app/build",
-        client.cacheVolume("gradle-app-build")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew build"])
-      .withExec(["cp", "-r", "/app/app/build", "/build"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/.gradle", dag.cacheVolume("gradle-cache"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("gradle-root-cache"))
+    .withMountedCache("/app/app/build", dag.cacheVolume("gradle-app-build"))
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "devbox run -- ./gradlew build"])
+    .withExec(["cp", "-r", "/app/app/build", "/build"]);
 
-    await ctr.stdout();
+  await ctr.stdout();
 
-    id = await ctr.directory("/build").id();
-  });
+  const id = await ctr.directory("/build").id();
   return id;
 }
 
@@ -86,53 +72,40 @@ export async function build(
  * @returns {string}
  */
 export async function test(src: Directory | string = "."): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const baseCtr = client
-      .pipeline(Job.test)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["apk", "update"])
-      .withExec([
-        "apk",
-        "add",
-        "bash",
-        "curl",
-        "wget",
-        "unzip",
-        "git",
-        "libstdc++",
-        "zlib",
-        "gcompat",
-      ])
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withExec([
-        "sh",
-        "-c",
-        "curl -fsSL https://get.jetpack.io/devbox | bash",
-      ]);
+  const baseCtr = dag
+    .pipeline(Job.test)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["apk", "update"])
+    .withExec([
+      "apk",
+      "add",
+      "bash",
+      "curl",
+      "wget",
+      "unzip",
+      "git",
+      "libstdc++",
+      "zlib",
+      "gcompat",
+    ])
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"]);
 
-    const ctr = baseCtr
-      .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("gradle-root-cache")
-      )
-      .withMountedCache(
-        "/app/app/build",
-        client.cacheVolume("gradle-app-build")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew test"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/.gradle", dag.cacheVolume("gradle-cache"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("gradle-root-cache"))
+    .withMountedCache("/app/app/build", dag.cacheVolume("gradle-app-build"))
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "devbox run -- ./gradlew test"]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -143,53 +116,40 @@ export async function test(src: Directory | string = "."): Promise<string> {
  * @returns {string}
  */
 export async function check(src: Directory | string = "."): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const baseCtr = client
-      .pipeline(Job.check)
-      .container()
-      .from("ghcr.io/fluentci-io/devbox:latest")
-      .withExec(["apk", "update"])
-      .withExec([
-        "apk",
-        "add",
-        "bash",
-        "curl",
-        "wget",
-        "unzip",
-        "git",
-        "libstdc++",
-        "zlib",
-        "gcompat",
-      ])
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withExec([
-        "sh",
-        "-c",
-        "curl -fsSL https://get.jetpack.io/devbox | bash",
-      ]);
+  const baseCtr = dag
+    .pipeline(Job.check)
+    .container()
+    .from("ghcr.io/fluentci-io/devbox:latest")
+    .withExec(["apk", "update"])
+    .withExec([
+      "apk",
+      "add",
+      "bash",
+      "curl",
+      "wget",
+      "unzip",
+      "git",
+      "libstdc++",
+      "zlib",
+      "gcompat",
+    ])
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withExec(["sh", "-c", "curl -fsSL https://get.jetpack.io/devbox | bash"]);
 
-    const ctr = baseCtr
-      .withMountedCache("/app/.gradle", client.cacheVolume("gradle-cache"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("gradle-root-cache")
-      )
-      .withMountedCache(
-        "/app/app/build",
-        client.cacheVolume("gradle-app-build")
-      )
-      .withDirectory("/app", context, { exclude })
-      .withWorkdir("/app")
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew check"]);
+  const ctr = baseCtr
+    .withMountedCache("/app/.gradle", dag.cacheVolume("gradle-cache"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("gradle-root-cache"))
+    .withMountedCache("/app/app/build", dag.cacheVolume("gradle-app-build"))
+    .withDirectory("/app", context, { exclude })
+    .withWorkdir("/app")
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "devbox run -- ./gradlew check"]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
