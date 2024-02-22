@@ -1,5 +1,0 @@
-{
-  "root": "",
-  "name": "gradle",
-  "sdkRuntime": "tsiry/dagger-sdk-deno"
-}
