@@ -1,3 +1,8 @@
+/**
+ * @module gradle
+ * @description This module provides a set of functions to run gradle tasks
+ */
+
 import { dag } from "../../sdk/client.gen.ts";
 import { Directory } from "../../deps.ts";
 import { getDirectory } from "./lib.ts";
@@ -25,7 +30,7 @@ export const exclude = [
 export async function build(
   src: Directory | string | undefined = "."
 ): Promise<Directory | string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
 
   const baseCtr = dag
     .pipeline(Job.build)
@@ -66,13 +71,15 @@ export async function build(
 }
 
 /**
+ * Run the tests
+ *
  * @function
  * @description Run the tests
  * @param {string | Directory} src
  * @returns {string}
  */
 export async function test(src: Directory | string = "."): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
 
   const baseCtr = dag
     .pipeline(Job.test)
@@ -110,13 +117,15 @@ export async function test(src: Directory | string = "."): Promise<string> {
 }
 
 /**
+ * Check the project
+ *
  * @function
  * @description Check the project
  * @param {string | Directory} src
  * @returns {string}
  */
 export async function check(src: Directory | string = "."): Promise<string> {
-  const context = await getDirectory(dag, src);
+  const context = await getDirectory(src);
 
   const baseCtr = dag
     .pipeline(Job.check)
