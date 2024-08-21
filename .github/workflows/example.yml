@@ -22,5 +22,5 @@ jobs:
             task test
           working-directory: example
       - name: Run Dagger Pipelines
-        run: dagger run deno run -A ../src/dagger/runner.ts
+        run: dagger run deno run -A ../src/runner.ts
         working-directory: example

@@ -3,9 +3,8 @@
  * @description This module provides a set of functions to run gradle tasks
  */
 
-import { dag } from "../../sdk/client.gen.ts";
-import { Directory } from "../../deps.ts";
-import { getDirectory } from "./lib.ts";
+import { type Directory, dag } from "../deps.ts";
+import { getDirectory } from "./helpers.ts";
 
 export enum Job {
   build = "build",
